@@ -10,3 +10,6 @@ wget https://raw.githubusercontent.com/guokes/sskcp/main/kcpc | bash
     "server_port":10800,
     "password":"password",
     "method":"chacha20-ietf"
+    
+   客户端 [点击下载](https://tlanyan.me/download.php?filename=/ssr/windows/ShadowsocksR-win-4.9.2-tlanyan.zip)
+
