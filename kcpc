@@ -1,0 +1,45 @@
+apt update && apt install  nload htop supervisor -y 
+systemctl enable --now supervisor
+cd /opt && mkdir -p  kcptun udp2raw
+cd kcptun
+wget https://github.com/xtaci/kcptun/releases/download/v20210103/kcptun-linux-amd64-20210103.tar.gz
+tar -xzvf kcptun-linux-amd64-20210103.tar.gz
+cd ../udp2raw
+wget https://github.com/wangyu-/udp2raw-tunnel/releases/download/20200818.0/udp2raw_binaries.tar.gz
+tar -xzvf udp2raw_binaries.tar.gz
+cat >>/etc/supervisor/conf.d/udp2raw.conf<<EOF
+[program:udp2raw]
+priority=1
+directory=/opt/udp2raw
+command=/opt/udp2raw/udp2raw_amd64 -c -r 43.128.4.202:6666 -l 127.0.0.1:8888 --raw-mode faketcp --cipher-mode none -a -k "password"
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/udp2raw.log
+EOF
+supervisorctl update
+cat >> /etc/supervisor/conf.d/kcptun.conf<<EOF
+[program:kcptun]
+priority=1
+directory=/opt/kcptun
+command=/opt/kcptun/client_linux_amd64 -r "127.0.0.1:8888" -l "0.0.0.0:10800" -mode manual -nodelay 1 -interval 20 -resend 2 -nc 1 --sndwnd 4096  --rcvwnd 4096  -mtu 1300  --nocomp  --ds 30 --ps 15  --crypt none
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/kcptun.log
+EOF
+supervisorctl update
+mkdir -p /opt/tinymapper && cd /opt/tinymapper
+wget https://github.com/wangyu-/tinyPortMapper/releases/download/20200818.0/tinymapper_binaries.tar.gz
+tar -xzvf tinymapper_binaries.tar.gz
+cat >>/etc/supervisor/conf.d/tinymapper.conf<<EOF
+[program:tinymapper]
+priority=1
+directory=/opt/tinymapper
+command=/opt/tinymapper/tinymapper_amd64 -l 0.0.0.0:10800 -r 10.222.2.1:9999 -t -u
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/tinymapper.log
+EOF
+supervisorctl update
