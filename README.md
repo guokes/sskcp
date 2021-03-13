@@ -1,9 +1,9 @@
 # sskcp:仅debian 系统执行
 ## 
 # Server端
-wget https://raw.githubusercontent.com/guokes/sskcp/main/kcps | bash
+wget https://raw.githubusercontent.com/guokes/sskcp/main/kcps | bash kcps
 # client端
-wget https://raw.githubusercontent.com/guokes/sskcp/main/kcpc | bash
+wget https://raw.githubusercontent.com/guokes/sskcp/main/kcpc | bash kcpc
 
 
 # 客户端连接
