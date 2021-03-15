@@ -18,11 +18,13 @@ redirect_stderr=true
 stdout_logfile=/var/log/supervisor/udp2raw.log
 EOF
 supervisorctl update
+echo ulimit -n 65535 >> /etc/bash.bashrc
+bash
 cat >> /etc/supervisor/conf.d/kcptun.conf<<EOF
 [program:kcptun]
 priority=1
 directory=/opt/kcptun
-command=/opt/kcptun/client_linux_amd64 -r "127.0.0.1:8888" -l "0.0.0.0:10800" -mode manual -nodelay 1 -interval 20 -resend 2 -nc 1 --sndwnd 4096  --rcvwnd 4096  -mtu 1300  --nocomp  --ds 30 --ps 15  --crypt none
+command=/opt/kcptun/client_linux_amd64 -r "127.0.0.1:8888" -l "0.0.0.0:10800" -mode manual -nodelay 1 -interval 20 -resend 2 -nc 1 --sndwnd 4096  --rcvwnd 4096  -mtu 1300  --nocomp  --ds 30 --ps 15  --crypt none -sockbuf 16777217 -dscp 46
 autostart=true
 autorestart=true
 redirect_stderr=true
