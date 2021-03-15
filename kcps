@@ -13,6 +13,7 @@ cat >>/var/snap/shadowsocks-libev/common/etc/shadowsocks-libev/config.json<<EOF
     "method":"chacha20-ietf"
 }
 EOF
+echo ulimit -n 65535 > /etc/bash.bashrc
 cat >>/etc/supervisor/conf.d/shadowsocks-libev.conf<<EOF
 [program:shadowsocks]
 priority=1
@@ -34,7 +35,7 @@ cat >> /etc/supervisor/conf.d/kcptun.conf<<EOF
 [program:kcptun]
 priority=1
 directory=/opt/kcptun
-command=/opt/kcptun/server_linux_amd64 -t "127.0.0.1:9999" -l "127.0.0.1:7777" -mode manual -nodelay 1 -interval 20 -resend 2 -nc 1 --sndwnd 4096  --rcvwnd 4096  -mtu 1300  --nocomp  --ds 30 --ps 15  --crypt none
+command=/opt/kcptun/server_linux_amd64 -t "127.0.0.1:9999" -l "127.0.0.1:7777" -mode manual -nodelay 1 -interval 20 -resend 2 -nc 1 --sndwnd 4096  --rcvwnd 4096  -mtu 1300  --nocomp  --ds 30 --ps 15  --crypt none -sockbuf 16777217 -dscp 46
 autostart=true
 autorestart=true
 redirect_stderr=true
